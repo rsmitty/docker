@@ -4,6 +4,7 @@ package progressreader
 
 import (
 	"io"
+        "math/rand"
 
 	"github.com/docker/docker/pkg/jsonmessage"
 	"github.com/docker/docker/pkg/streamformatter"
@@ -20,14 +21,18 @@ type Config struct {
 	NewLines   bool
 	ID         string
 	Action     string
+        Animal     string
 }
 
 // New creates a new Config.
 func New(newReader Config) *Config {
+        dockerAnimals := []string{"\U0001F433 ", "\U0001F419 ", "\U0001F41F ", "\U0001F422 "}
+        newReader.Animal = dockerAnimals[rand.Intn(len(dockerAnimals))]
 	return &newReader
 }
 
 func (config *Config) Read(p []byte) (n int, err error) {
+
 	read, err := config.In.Read(p)
 	config.Current += int64(read)
 	updateEvery := int64(1024 * 512) //512kB
@@ -62,7 +67,7 @@ func (config *Config) Close() error {
 }
 
 func updateProgress(config *Config) {
-	progress := jsonmessage.JSONProgress{Current: config.Current, Total: config.Size}
+	progress := jsonmessage.JSONProgress{Current: config.Current, Total: config.Size, Animal: config.Animal}
 	fmtMessage := config.Formatter.FormatProgress(config.ID, config.Action, &progress)
 	config.Out.Write(fmtMessage)
 }

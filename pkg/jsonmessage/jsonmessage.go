@@ -32,6 +32,7 @@ type JSONProgress struct {
 	Current    int64 `json:"current,omitempty"`
 	Total      int64 `json:"total,omitempty"`
 	Start      int64 `json:"start,omitempty"`
+        Animal     string `json:animal,omitempty`
 }
 
 func (p *JSONProgress) String() string {
@@ -40,8 +41,9 @@ func (p *JSONProgress) String() string {
 		pbBox       string
 		numbersBox  string
 		timeLeftBox string
-	)
 
+	)
+        
 	ws, err := term.GetWinsize(p.terminalFd)
 	if err == nil {
 		width = int(ws.Width)
@@ -59,13 +61,14 @@ func (p *JSONProgress) String() string {
 	if percentage > 50 {
 		percentage = 50
 	}
+
 	if width > 110 {
 		// this number can't be negetive gh#7136
 		numSpaces := 0
 		if 50-percentage > 0 {
 			numSpaces = 50 - percentage - 1 
 		}
-		pbBox = fmt.Sprintf("[%s\U0001F433 %s] ", strings.Repeat("~", percentage), strings.Repeat("~", numSpaces))
+		pbBox = fmt.Sprintf("[%s%s%s] ", strings.Repeat("~", percentage), p.Animal , strings.Repeat("~", numSpaces))
 	}
 
 	numbersBox = fmt.Sprintf("%8v/%v", current, total)
