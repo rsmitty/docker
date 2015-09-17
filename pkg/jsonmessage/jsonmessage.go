@@ -63,9 +63,9 @@ func (p *JSONProgress) String() string {
 		// this number can't be negetive gh#7136
 		numSpaces := 0
 		if 50-percentage > 0 {
-			numSpaces = 50 - percentage
+			numSpaces = 50 - percentage - 1 
 		}
-		pbBox = fmt.Sprintf("[%s>%s] ", strings.Repeat("=", percentage), strings.Repeat(" ", numSpaces))
+		pbBox = fmt.Sprintf("[%s\U0001F433 %s] ", strings.Repeat("~", percentage), strings.Repeat("~", numSpaces))
 	}
 
 	numbersBox = fmt.Sprintf("%8v/%v", current, total)
